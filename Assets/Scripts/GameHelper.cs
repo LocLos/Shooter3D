@@ -1,17 +1,16 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using Zenject;
 
 public class GameHelper : MonoBehaviour
 {
-
     [SerializeField]
     private int _currentEnemyCount;
 
     [SerializeField]
     private int _nextLevel;
 
-     [SerializeField]
     private EnemySpawner _enemySpawner;
 
     private bool _isLoadNextLvl = false;
@@ -21,6 +20,13 @@ public class GameHelper : MonoBehaviour
 
     [SerializeField]
     private int _score = 0;
+
+    [Inject]
+    public void Constructor(EnemySpawner enemySpawner)
+    {
+        _enemySpawner = enemySpawner;
+
+    }
 
     private void Start()
     {
