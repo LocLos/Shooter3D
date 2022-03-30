@@ -1,27 +1,35 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class PlayerShoot : MonoBehaviour
 {
-    public GameObject bulletPrefab;  
-    public Transform shootPoint;  
-    Animator anim;
+    private const string _isAttack = "isAttack";
+
+    [SerializeField]
+    private GameObject _bulletPrefab;
+
+    [SerializeField]
+    private Transform _shootPoint;
+
+    private Animator _anim;
      
     void Start()
     {
-        anim = GetComponentInChildren<Animator>();  
+        _anim = GetComponentInChildren<Animator>();  
     }
-
      
     void Update()
     {
-        if (Input.GetMouseButtonDown(0))  
+        Shooting();
+    }
+
+    private void Shooting()
+    {
+        if (Input.GetMouseButtonDown(0))
         {
-            GameObject bulletObject = Instantiate(bulletPrefab);  
-            bulletObject.transform.position = shootPoint.position;  
-            bulletObject.transform.forward = shootPoint.forward;  
-            anim.SetTrigger("isAttack");  
+            GameObject bulletObject = Instantiate(_bulletPrefab);
+            bulletObject.transform.position = _shootPoint.position;
+            bulletObject.transform.forward = _shootPoint.forward;
+            _anim.SetTrigger(_isAttack);
         }
     }
 }

@@ -1,33 +1,25 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class Bullet : MonoBehaviour
 {
-    public float speed = 3f;
-    PlayerMove player;
-    GameManager levelManager;
-     
-    void Start()
-    {
-        player = FindObjectOfType<PlayerMove>();
-        levelManager = FindObjectOfType<GameManager>();
-    }
+    [SerializeField]
+    private float _speed = 3f;
 
-     
+    public static event OnHitEnemy onHitEnemy;
+    public delegate void OnHitEnemy();
+
     void Update()
     {
-        transform.position += transform.forward * speed * Time.deltaTime;  
+        transform.position += transform.forward * _speed * Time.deltaTime;
     }
-    void OnTriggerEnter(Collider other)   
+
+    void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Enemy"))  
+        if (other.TryGetComponent(out Enemy enemy))
         {
+            onHitEnemy?.Invoke();
             Destroy(other.gameObject);
-            player.score++;
-            player.scoreText.text = $"Score: {player.score}";
-            levelManager.CurrentEnemyCount--;
         }
-        Destroy(this.gameObject);  
+        Destroy(gameObject);
     }
 }

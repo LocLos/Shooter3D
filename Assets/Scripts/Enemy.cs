@@ -1,35 +1,39 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.AI;
 
 public class Enemy : MonoBehaviour
 {
-    NavMeshAgent agent;
-    PlayerMove target;  
-    public int damage = 20;
-    GameManager levelManager;
-     
+    [SerializeField]
+    private int _damage = 20;
+    private NavMeshAgent _agent;
+    private PlayerMove _target;
+
+    public static event OnDeath onDeath;
+    public delegate void OnDeath();
+
     void Start()
     {
-        agent = GetComponent<NavMeshAgent>();  
-        target = FindObjectOfType<PlayerMove>();  
-        levelManager = FindObjectOfType<GameManager>();
+        _agent = GetComponent<NavMeshAgent>();
+        _target = FindObjectOfType<PlayerMove>();
     }
 
-     
     void Update()
     {
-        agent.SetDestination(target.transform.position);  
+        _agent.SetDestination(_target.transform.position);
     }
+
     void OnTriggerEnter(Collider other)
     {
-        if (other.name.Equals("Player"))
+        if (other.TryGetComponent(out PlayerHealth player))
         {
-            target.TakeDamage(damage);  
+            player.TakeDamage(_damage);
             Destroy(gameObject);
-            levelManager.CurrentEnemyCount--;
         }
+    }
+
+    private void OnDestroy()
+    {
+        onDeath?.Invoke();
 
     }
 }
